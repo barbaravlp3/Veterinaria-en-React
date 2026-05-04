@@ -59,7 +59,49 @@ const agregarMascota =  (nuevaMascota) => { // Esta función recibe una mascota 
 setMascotas([...mascotas, nuevaMascota]) // ...lo suma a la lista que ya teníamos sin borrar los anteriores.
 }
 
-//esto se verá en pantalla
+const eliminarCliente = (id) => {
+  const listaActualizada = clientes.filter(cliente => 
+    cliente.id !== id
+  );
+
+  setClientes(listaActualizada);
+} //Lista actualizada de clientes sin el cliente eliminado
+
+
+const actualizarCliente = (clienteActualizado) => {
+  const listaActualizada = clientes.map(cliente => {
+if(cliente.id === clienteActualizado.id) {
+return clienteActualizado;
+}
+ return cliente;
+  });
+
+  setClientes(listaActualizada);
+}
+
+//Ahora para mascotas: eliminar y modificar
+const eliminarMascota = (id) => {
+  const listaActualizada = mascotas.filter(mascota=> 
+    mascota.id !== id
+  );
+
+  setMascotas(listaActualizada);
+} //Lista actualizada de mascotas sin la mascota eliminada
+
+
+const actualizarMascota = (mascotaActualizada) => {
+  const listaActualizada = mascotas.map(mascota => {
+if(mascota.id === mascotaActualizada.id) {
+return mascotaActualizada;
+}
+ return mascota;
+  });
+
+  setMascotas(listaActualizada);
+}
+
+
+//A continuacion, esto se verá en pantalla
 return ( // Aquí empieza lo que el usuario realmente va a ver en el navegador.
 <div> 
 {/* Esto es JSX. Parece HTML, ¡pero nos permite meter variables de JS!
@@ -86,7 +128,12 @@ Para ello, usamos llaves { }
  <FormularioCliente onClienteAgregado={agregarCliente} />
 <ul>
   {clientes.map((cliente) => (
-<ClienteItem key={cliente.id} cliente={cliente} />
+<ClienteItem 
+key={cliente.id} 
+cliente={cliente}
+onEliminar={eliminarCliente}
+onGuardar={actualizarCliente}
+ />
   ))
   }
   
@@ -95,10 +142,14 @@ Para ello, usamos llaves { }
  <FormularioMascota onMascotaAgregada={agregarMascota} />
 <ul>
   {mascotas.map((mascota) => (
-<MascotaItem key={mascota.id} mascota={mascota} />
+<MascotaItem 
+key={mascota.id}
+mascota={mascota} 
+onEliminar={eliminarMascota}
+onGuardar={actualizarMascota}
+/>
   ))
   }
-  
 </ul>
 
 </div>// Es el contenedor de toda nuestra aplicación.
