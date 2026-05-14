@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // // Traemos una herramienta de React 
 // para que la página pueda "recordar" datos y actualizarse.
 
@@ -18,6 +18,7 @@ import FormularioMascota from './componentes/FormularioMascota';
 import MascotaItem from './componentes/MascotaItem'; 
 // Traemos el diseño de cómo se verá cada cliente en la lista.
 
+import Login from './componentes/Login';
 
 import './App.css'; // Asume que tienes un archivo CSS para estilos
 // Traemos los estilos (colores, tamaños) para que la página no se vea vacía.
@@ -30,26 +31,27 @@ function App() {
 // 2. Aquí dentro va la lógica de JavaScript (aún simple)
 //Definimos variables
 
-const [clientes, setClientes] = useState ([ 
-  // 'clientes' guarda la lista,
-//  'setClientes' es la función para cambiar esa lista.
-  { id: 1, nombre: "Juan Peréz", telefono: '123456789' }, // Un cliente de ejemplo ya cargado.
-  { id: 2, nombre: "Ana Gomez", telefono: '11987654321' }, // Otro cliente de ejemplo.
+const [clientes, setClientes] = useState (() =>  { 
+ const datosGuardados = localStorage.getItem('clientesDogo') | [];
+return datosGuardados ? JSON.parse(datosGuardados) : [];
+}
+);
 
-]) // Aquí termina nuestra lista inicial de clientes.
-
-const [mascotas, setMascotas] = useState ([ 
-  // 'mascotas' guarda la lista,
-//  'setMascotas' es la función para cambiar esa lista.
-  { id: 3, nombre: "Bubu", edad: '10' }, // Una mascota de ejemplo ya cargada.
-  { id: 4, nombre: "Pía", edad: '11' }, // Otra mascota de ejemplo.
-
-]) // Aquí termina nuestra lista inicial de mascotas.
+const [mascotas, setMascotas] = useState (() =>  { 
+ const datosGuardados = localStorage.getItem('mascotasDogo') | [];
+return datosGuardados ? JSON.parse(datosGuardados) : [];
+}
+); // Aquí termina nuestra lista inicial de mascotas.
 
 const nombreApp = "El Dogo - Gestión de Pacientes";
 // Guardamos el nombre de la app en una palabra fácil de usar después.
 // 3. El componente DEBE devolver el JSX (lo que se va a ver en pantalla)
 
+const [estaLogueado, setEstaLogueado] = useState(false); 
+
+const manejadorLogin = (estado) => {
+  setEstaLogueado(estado);
+}
 
 const agregarCliente =  (nuevoCliente) => { // Esta función recibe un cliente nuevo y...
 setClientes([...clientes, nuevoCliente]) // ...lo suma a la lista que ya teníamos sin borrar los anteriores.
@@ -100,6 +102,17 @@ return mascotaActualizada;
   setMascotas(listaActualizada);
 }
 
+useEffect(() => {
+console.log("Detectando cambios en la lista del cliente. ¡Guardando!");
+localStorage.setItem('clientesDogo', JSON.stringify(clientes));
+}, [clientes]); // Cada vez que 'clientes' cambie, se ejecuta el código de arriba.
+
+
+useEffect(() => {
+console.log("Detectando cambios en la lista de mascotas. ¡Guardando!");
+localStorage.setItem('mascotasDogo', JSON.stringify(mascotas));
+}, [mascotas]);
+
 
 //A continuacion, esto se verá en pantalla
 return ( // Aquí empieza lo que el usuario realmente va a ver en el navegador.
@@ -111,7 +124,8 @@ Para ello, usamos llaves { }
 <p>¡Bienvenido! Acá gestionarás a tus Clientes y Mascotas.</p> 
 {/* En la próxima etapa, aquí pondremos otros componentes */}
 
-
+{estaLogueado ? (
+  <section>
 <p>Total de clientes registrados: ** {clientes.length} ** </p> 
 <p>Total de mascotas registradas: ** {mascotas.length} ** </p> 
 
@@ -151,9 +165,19 @@ onGuardar={actualizarMascota}
   ))
   }
 </ul>
+  </section>
+) : (
+  <Login onLoginExitoso={manejadorLogin} />
 
-</div>// Es el contenedor de toda nuestra aplicación.
-);
+)}
+
+{estaLogueado &&(
+<button onClick={() => setEstaLogueado(false)}>Cerrar sesión</button>
+)
+}
+
+</div>
+)
 }
 // 4. Exportamos el componente para poder usarlo en otro lugar (generalmente index.js)
 export default App;
