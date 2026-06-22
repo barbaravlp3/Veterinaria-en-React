@@ -1,12 +1,13 @@
 import { useState } from "react"; // Traemos la herramienta de React 
 // para que el formulario "recuerde" lo que escribimos.
 
-function FormularioMascota ({onMascotaAgregada}){ // Creamos el formulario 
+function FormularioMascota ({clientes, onMascotaAgregada}){ // Creamos el formulario 
 // y recibimos la función para avisar a la App cuando haya una mascota nueva.
 
 
 const [nombre, setNombre] = useState(''); // Creamos la cajita para guardar el nombre. Empieza vacía.
 const [edad, setEdad] = useState(''); // Creamos la cajita para guardar la edad. Empieza vacía.
+const [clienteId, setClienteId] = useState('');
 
 //funcion para manejar cuando cambie el nombre de la mascota, 
 // y otra para cuando cambie la edad de la mascota, 
@@ -24,6 +25,9 @@ const manejadorEdad = (e) => {
         setEdad(e.target.value); // Guarda lo que el usuario escribió en el estado 'edad'.
     }
 
+    const manejadorClienteId = (e) => { 
+        setClienteId(e.target.value); // Guarda lo que el usuario escribió en el estado 'edad'.
+    }
 
     // Función que se activa al hacer clic en el botón "Registrar Mascota".
   const manejadorEnvio = (e) => {
@@ -32,7 +36,7 @@ const manejadorEdad = (e) => {
 
 
         //trim= no espacio en blanco al principio ni al final
-        if (nombre.trim() === '' || edad.trim() === '') {
+        if (nombre.trim() === '' || clienteId === '' || edad.trim() === '') {
             alert('Por favor, complete todos los campos');
             return;
         }
@@ -42,6 +46,7 @@ const manejadorEdad = (e) => {
             id: Date.now(), //generamos un id unico basado en la fecha actual
             nombre: nombre,// Guarda el nombre que capturamos.
             edad: edad, // Guarda la edad que capturamos.
+            clienteId: Number(clienteId)
         };
 
         console.log('Mascota lista para registrarse!', nuevaMascota); // Muestra en la consola
@@ -52,14 +57,35 @@ onMascotaAgregada(nuevaMascota);
 
 setNombre(''); // Borra lo que estaba escrito en el cuadro de nombre.
 setEdad(''); // Borra lo que estaba escrito en el cuadro de edad.
+setClienteId(''); 
 };
 
 
 
 return( 
     <form onSubmit={manejadorEnvio}> 
-    <h3>nueva mascota:</h3>
-    <label htmlFor=""> Nombre Completo
+    <h3>Nueva Mascota:</h3>
+<label>
+    Dueño (Cliente):
+ <select 
+ value={clienteId}
+onChange={(e) => setClienteId(e.target.value)}
+    required
+    >
+
+        <option value="">-- Seleccione un dueño --</option>
+        {clientes.map(cliente => (
+            <option
+             key={cliente.id}
+                value={cliente.id}
+            >
+               {cliente.nombre}
+            </option>
+        ))}
+        </select>
+        </label>
+
+<label htmlFor=""> Nombre Completo
 <input 
 type="text" 
 value={nombre} //donde se guarda
@@ -69,8 +95,7 @@ required />
 
 
 <label htmlFor="">Edad:
-
-<input 
+<input
 type="number"
 value={edad}
 onChange={manejadorEdad} 
@@ -78,7 +103,6 @@ required />
 </label>
 
 <button type="submit">Registrar Mascota</button>
-
 </form>
 
 )

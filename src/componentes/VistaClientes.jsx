@@ -5,6 +5,7 @@ import FormularioCliente from './FormularioCliente';
 // Asegúrate de que la ruta sea correcta
 import ClienteItem from './ClienteItem';
 // Traemos el diseño de cómo se verá cada cliente en la lista.
+import styles from './VistaClientes.module.css'
 
 
 function VistaClientes() {
@@ -25,7 +26,7 @@ function VistaClientes() {
     );
 
     setClientes(listaActualizada);
-  } 
+  }
 
   const actualizarCliente = (clienteActualizado) => {
     const listaActualizada = clientes.map(cliente => {
@@ -45,26 +46,27 @@ function VistaClientes() {
   }, [clientes]);
 
   return (
-    <div> 
-  <section>
-    <h2>Gestión de Clientes</h2>
-<p>Total de clientes registrados: ** {clientes.length} ** </p> 
-<hr />
- <FormularioCliente onClienteAgregado={agregarNuevoCliente} />
-<ul>
-  {
-  clientes.map((cliente) => (
-<ClienteItem 
-key={cliente.id} 
-cliente={cliente}
-onEliminar={eliminarCliente}
-onGuardar={actualizarCliente}
- />
-  ))
-  }
-</ul>
-</section>
-  </div>
+    <div className={styles.contenedorPrincipal}>
+
+      <section>
+        <h2 className={styles.titulo}>Gestión de Clientes</h2>
+        <p className={styles.contador}>Total de clientes registrados: ** {clientes.length} ** </p>
+        <hr />
+        <FormularioCliente onClienteAgregado={agregarNuevoCliente} />
+        <ul>
+          {
+            clientes.map((cliente) => (
+              <ClienteItem
+                key={cliente.id}
+                cliente={cliente}
+                onEliminar={eliminarCliente}
+                onGuardar={actualizarCliente}
+              />
+            ))
+          }
+        </ul>
+      </section>
+    </div>
   )
 }
 export default VistaClientes;

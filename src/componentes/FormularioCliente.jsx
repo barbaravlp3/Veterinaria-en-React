@@ -59,7 +59,7 @@ setTelefono(''); // Borra lo que estaba escrito en el cuadro de telefono.
 
 return( 
     <form onSubmit={manejadorEnvio}> 
-    <h3>nuevo cliente:</h3>
+    <h3>Nuevo Cliente:</h3>
     <label htmlFor=""> Nombre Completo
 <input 
 type="text" 
