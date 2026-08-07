@@ -8,9 +8,12 @@ import Navegacion from './componentes/Navegacion';
 import VistaClientes from './componentes/VistaClientes';
 import VistaMascotas from './componentes/VistaMascotas';
 import VistaConfiguracion from './componentes/VistaConfiguracion';
+import VistaDetalleCliente from './componentes/VistaDetalleCliente';
+import { VeterinariaProvider } from './contexto/VeterinariaProvider';
+import './App.css';
 
 
-import './App.css'; // Asume que tienes un archivo CSS para estilos
+// Asume que tienes un archivo CSS para estilos
 // Traemos los estilos (colores, tamaños) para que la página no se vea vacía.
 // 1. Definimos nuestro componente principal
 // Es una función que, por convención, empieza con Mayúscula.
@@ -34,15 +37,18 @@ function App() {
       <h1>{nombreApp}</h1>
       <p>¡Bienvenido! Acá gestionarás a tus Clientes y Mascotas.</p>
       {estaLogueado ? (
+        <VeterinariaProvider>
         <>
           <Navegacion />
 <Routes>
 <Route path="/" element={<VistaClientes />} />
+<Route path="/clientes/:id" element={<VistaDetalleCliente />} />
 <Route path="/mascotas" element={<VistaMascotas />} />
 <Route path="/configuracion" element={<VistaConfiguracion />} />
 <Route path="*" element={<h2>404 - Página no encontrada</h2>} />
 </Routes>
         </>
+        </VeterinariaProvider>
       ) : (
         <div>
           <Login onLoginExitoso={manejadorLogin} />

@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {Link} from 'react-router-dom';
 
 function ClienteItem({ cliente, onEliminar, onGuardar }) {
   
@@ -52,8 +53,11 @@ onChange={(e) => setTelefonoEditado(e.target.value)}
 
 (
 <div>
+<Link to={`/clientes/${cliente.id}`}>Ver Detalle</Link>
+<strong>
+**{cliente.nombre}**</strong>
 
-**{cliente.nombre}** -  Tel: {cliente.telefono}
+ -  Tel: {cliente.telefono}
 <button onClick={manejadorEditar}>
   Editar
 </button>
