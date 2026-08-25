@@ -1,79 +1,146 @@
-import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function ClienteItem({ cliente, onEliminar, onGuardar }) {
-  
-const [esEdicion, setEsEdicion] = useState(false);
 
-const [nombreEditado, setNombreEditado] = useState(cliente.nombre);
-const [telefonoEditado, setTelefonoEditado] = useState(cliente.telefono);
+    const [esEdicion, setEsEdicion] = useState(false);
 
+    const [nombreEditado, setNombreEditado] = useState(
+        cliente.nombre || ''
+    );
 
-  const manejadorEliminar = () => {
-    if(window.confirm(`Desea eliminar a ${cliente.nombre}?`)) {
-      onEliminar(cliente.id);
-    }
-  }
+    const [apellidoEditado, setApellidoEditado] = useState(
+        cliente.apellido || ''
+    );
 
+    const [telefonoEditado, setTelefonoEditado] = useState(
+        cliente.telefono || ''
+    );
 
-  const manejadorEditar = () => {
-    setEsEdicion (true);
-  }
+    const manejadorEliminar = () => {
+        if (
+            window.confirm(
+                `¿Desea eliminar a ${cliente.nombre} ${cliente.apellido || ''}?`
+            )
+        ) {
+            onEliminar(cliente.id);
+        }
+    };
 
-const manejadorGuardar = (e) => {
-  e.preventDefault();
-  
-  const clienteActualizado = {
-    ...cliente,
-    nombre: nombreEditado,
-    telefono: telefonoEditado
-  };
-  onGuardar(clienteActualizado);
-  setEsEdicion(false);
-};
+    const manejadorEditar = () => {
+        // Cargamos nuevamente los datos actuales
+        setNombreEditado(cliente.nombre || '');
+        setApellidoEditado(cliente.apellido || '');
+        setTelefonoEditado(cliente.telefono || '');
 
+        setEsEdicion(true);
+    };
 
-return (
-<li key={cliente.id}>
-{esEdicion ? (
-<form onSubmit={manejadorGuardar}>
-<input type="text" 
-value={nombreEditado} 
-onChange={(e) => setNombreEditado(e.target.value)}
- />
- <input 
- type="text" 
-value={telefonoEditado} 
-onChange={(e) => setTelefonoEditado(e.target.value)}
- />
-<button type="submit">Guardar</button>
-<button type="button" onClick={() => setEsEdicion(false)}>Cancelar</button>
-</form>
-):
+    const manejadorGuardar = (e) => {
+        e.preventDefault();
 
-(
-<div>
-<Link to={`/clientes/${cliente.id}`}>Ver Detalle</Link>
-<strong>
-**{cliente.nombre}**</strong>
+        const clienteActualizado = {
+            ...cliente,
 
- -  Tel: {cliente.telefono}
-<button onClick={manejadorEditar}>
-  Editar
-</button>
+            nombre: nombreEditado.trim(),
 
+            apellido: apellidoEditado.trim(),
 
-<button onClick={manejadorEliminar}>
-  Eliminar
-</button>
+            telefono: telefonoEditado.trim()
+        };
 
-</div>
-)};
+        console.log(
+            "Cliente que React está actualizando:",
+            clienteActualizado
+        );
 
+        onGuardar(clienteActualizado);
 
+        setEsEdicion(false);
+    };
 
-  </li>
-  )
+    return (
+        <li>
+
+            {esEdicion ? (
+
+                <form onSubmit={manejadorGuardar}>
+
+                    <label>
+                        Nombre:
+                        <input
+                            type="text"
+                            value={nombreEditado}
+                            onChange={(e) =>
+                                setNombreEditado(e.target.value)
+                            }
+                        />
+                    </label>
+
+                    <label>
+                        Apellido:
+                        <input
+                            type="text"
+                            value={apellidoEditado}
+                            onChange={(e) =>
+                                setApellidoEditado(e.target.value)
+                            }
+                        />
+                    </label>
+
+                    <label>
+                        Teléfono:
+                        <input
+                            type="text"
+                            value={telefonoEditado}
+                            onChange={(e) =>
+                                setTelefonoEditado(e.target.value)
+                            }
+                        />
+                    </label>
+
+                    <button type="submit">
+                        Guardar
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setEsEdicion(false)}
+                    >
+                        Cancelar
+                    </button>
+
+                </form>
+
+            ) : (
+
+                <div>
+
+                    <Link to={`/clientes/${cliente.id}`}>
+                        Ver Detalle
+                    </Link>
+
+                    <strong>
+                        {cliente.nombre} {cliente.apellido || ''}
+                    </strong>
+
+                    <span>
+                        - Tel: {cliente.telefono}
+                    </span>
+
+                    <button onClick={manejadorEditar}>
+                        Editar
+                    </button>
+
+                    <button onClick={manejadorEliminar}>
+                        Eliminar
+                    </button>
+
+                </div>
+            )}
+
+        </li>
+    );
 }
 
 export default ClienteItem;

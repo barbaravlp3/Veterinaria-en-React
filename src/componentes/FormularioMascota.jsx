@@ -1,117 +1,111 @@
-import { useState } from "react"; // Traemos la herramienta de React 
-// para que el formulario "recuerde" lo que escribimos.
+import { useState } from "react";
 
-function FormularioMascota ({clientes, onMascotaAgregada}){ // Creamos el formulario 
-// y recibimos la función para avisar a la App cuando haya una mascota nueva.
+function FormularioMascota({ clientes, onMascotaAgregada }) {
 
+    const [nombre, setNombre] = useState('');
+    const [especie, setEspecie] = useState('');
+    const [raza, setRaza] = useState('');
+    const [clienteId, setClienteId] = useState('');
 
-const [nombre, setNombre] = useState(''); // Creamos la cajita para guardar el nombre. Empieza vacía.
-const [edad, setEdad] = useState(''); // Creamos la cajita para guardar la edad. Empieza vacía.
-const [clienteId, setClienteId] = useState('');
+    const manejadorEnvio = (e) => {
+        e.preventDefault();
 
-//funcion para manejar cuando cambie el nombre de la mascota, 
-// y otra para cuando cambie la edad de la mascota, 
-// y otra funcion para cuando enviemos los valores del formulario 
-
-
-// Función que se activa cada vez que escribimos una letra en el campo de Nombre.
-const manejadorNombre = (e) => {
-        setNombre(e.target.value); // Guarda lo que el usuario escribió en el estado 'nombre'.
-    }
-
-
- // Función que se activa cada vez que escribimos un número en el campo de Edad.   
-const manejadorEdad = (e) => { 
-        setEdad(e.target.value); // Guarda lo que el usuario escribió en el estado 'edad'.
-    }
-
-    const manejadorClienteId = (e) => { 
-        setClienteId(e.target.value); // Guarda lo que el usuario escribió en el estado 'edad'.
-    }
-
-    // Función que se activa al hacer clic en el botón "Registrar Mascota".
-  const manejadorEnvio = (e) => {
-        e.preventDefault(); //evita que se recargue la pagina al enviar el formulario
-        //  o solo haga lo que yo quiero
-
-
-        //trim= no espacio en blanco al principio ni al final
-        if (nombre.trim() === '' || clienteId === '' || edad.trim() === '') {
+        if (
+            nombre.trim() === '' ||
+            especie.trim() === '' ||
+            clienteId === ''
+        ) {
             alert('Por favor, complete todos los campos');
             return;
         }
 
-        // Creamos un "paquete" (objeto) con toda la información del nueva mascota.
         const nuevaMascota = {
-            id: Date.now(), //generamos un id unico basado en la fecha actual
-            nombre: nombre,// Guarda el nombre que capturamos.
-            edad: edad, // Guarda la edad que capturamos.
+            nombre: nombre.trim(),
+            especie: especie.trim(),
+            raza: raza.trim(),
             clienteId: Number(clienteId)
         };
 
-        console.log('Mascota lista para registrarse!', nuevaMascota); // Muestra en la consola
-        //  del navegador que todo salió bien.
+        console.log('Mascota lista para registrarse:', nuevaMascota);
 
-onMascotaAgregada(nuevaMascota); 
+        onMascotaAgregada(nuevaMascota);
 
+        setNombre('');
+        setEspecie('');
+        setRaza('');
+        setClienteId('');
+    };
 
-setNombre(''); // Borra lo que estaba escrito en el cuadro de nombre.
-setEdad(''); // Borra lo que estaba escrito en el cuadro de edad.
-setClienteId(''); 
-};
+    return (
+        <form onSubmit={manejadorEnvio}>
 
+            <h3>Nueva Mascota:</h3>
 
+            <label>
+                Dueño (Cliente):
 
-return( 
-    <form onSubmit={manejadorEnvio}> 
-    <h3>Nueva Mascota:</h3>
-<label>
-    Dueño (Cliente):
- <select 
- value={clienteId}
-onChange={(e) => setClienteId(e.target.value)}
-    required
-    >
+                <select
+                    value={clienteId}
+                    onChange={(e) => setClienteId(e.target.value)}
+                    required
+                >
+                    <option value="">
+                        -- Seleccione un dueño --
+                    </option>
 
-        <option value="">-- Seleccione un dueño --</option>
-        {clientes.map(cliente => (
-            <option
-             key={cliente.id}
-                value={cliente.id}
-            >
-               {cliente.nombre}
-            </option>
-        ))}
-        </select>
-        </label>
+                    {clientes.map((cliente) => (
+                        <option
+                            key={cliente.id}
+                            value={cliente.id}
+                        >
+                            {cliente.nombre} {cliente.apellido}
+                        </option>
+                    ))}
+                </select>
+            </label>
 
-<label htmlFor=""> Nombre Completo
-<input 
-type="text" 
-value={nombre} //donde se guarda
-onChange={manejadorNombre} //cuando se modifique que se ejecute
-required /> 
-</label>
+            <label>
+                Nombre de la mascota:
 
+                <input
+                    type="text"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    required
+                />
+            </label>
 
-<label htmlFor="">Edad:
-<input
-type="number"
-value={edad}
-onChange={manejadorEdad} 
-required />
-</label>
+            <label>
+                Especie:
 
-<button type="submit">Registrar Mascota</button>
-</form>
+                <input
+                    type="text"
+                    value={especie}
+                    onChange={(e) => setEspecie(e.target.value)}
+                    placeholder="Ej: Perro"
+                    required
+                />
+            </label>
 
-)
+            <label>
+                Raza:
 
-};
+                <input
+                    type="text"
+                    value={raza}
+                    onChange={(e) => setRaza(e.target.value)}
+                    placeholder="Ej: Labrador"
+                />
+            </label>
 
-export default FormularioMascota; 
-//vamos a hacer que este formulario 
-// aparezca en la pantalla principal 
+            <button type="submit">
+                Registrar Mascota
+            </button>
 
+        </form>
+    );
+}
+
+export default FormularioMascota;
 
 

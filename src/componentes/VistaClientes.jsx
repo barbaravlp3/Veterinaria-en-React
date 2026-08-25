@@ -11,7 +11,7 @@ import styles from './VistaClientes.module.css'
 
 function VistaClientes() {
   const { clientes, 
-    agregarNuevoCliente, 
+    agregarCliente, 
     actualizarCliente, 
     eliminarCliente,  
   } = useContext(VeterinariaContext);
@@ -24,7 +24,7 @@ function VistaClientes() {
         <h2 className={styles.titulo}>Gestión de Clientes</h2>
         <p className={styles.contador}>Total de clientes registrados: ** {clientes.length} ** </p>
         <hr />
-        <FormularioCliente onClienteAgregado={agregarNuevoCliente} />
+        <FormularioCliente onClienteAgregado={agregarCliente} />
         <ul>
           {
             clientes.map((cliente) => (
