@@ -1,67 +1,112 @@
 
-import { useState } from 'react';
-// // Traemos una herramienta de React 
-// para que la página pueda "recordar" datos y actualizarse.
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Login from './componentes/Login';
 import Navegacion from './componentes/Navegacion';
+import RutaProtegida from './componentes/RutaProtegida';
+
 import VistaClientes from './componentes/VistaClientes';
 import VistaMascotas from './componentes/VistaMascotas';
 import VistaConfiguracion from './componentes/VistaConfiguracion';
 import VistaDetalleCliente from './componentes/VistaDetalleCliente';
+
 import { VeterinariaProvider } from './contexto/VeterinariaProvider';
+import {
+    AutenticacionProvider,
+    useAutenticacion
+} from './contexto/AutenticacionContexto';
+
 import './App.css';
 
+function ContenidoApp() {
+    const { estaAutenticado } = useAutenticacion();
 
-// Asume que tienes un archivo CSS para estilos
-// Traemos los estilos (colores, tamaños) para que la página no se vea vacía.
-// 1. Definimos nuestro componente principal
-// Es una función que, por convención, empieza con Mayúscula.
+    return (
+        <>
+            <h1>El Dogo - Gestión de Pacientes</h1>
+            <p>
+                ¡Bienvenido! Acá gestionarás a tus Clientes y Mascotas.
+            </p>
 
+            <Routes>
+                <Route
+                    path="/login"
+                    element={
+                        estaAutenticado
+                            ? <Navigate to="/" replace />
+                            : <Login />
+                    }
+                />
+
+                <Route element={<RutaProtegida />}>
+                    <Route
+                        path="/"
+                        element={
+                            <VeterinariaProvider>
+                                <>
+                                    <Navegacion />
+                                    <VistaClientes />
+                                </>
+                            </VeterinariaProvider>
+                        }
+                    />
+
+                    <Route
+                        path="/clientes/:id"
+                        element={
+                            <VeterinariaProvider>
+                                <>
+                                    <Navegacion />
+                                    <VistaDetalleCliente />
+                                </>
+                            </VeterinariaProvider>
+                        }
+                    />
+
+                    <Route
+                        path="/mascotas"
+                        element={
+                            <VeterinariaProvider>
+                                <>
+                                    <Navegacion />
+                                    <VistaMascotas />
+                                </>
+                            </VeterinariaProvider>
+                        }
+                    />
+
+                    <Route
+                        path="/configuracion"
+                        element={
+                            <VeterinariaProvider>
+                                <>
+                                    <Navegacion />
+                                    <VistaConfiguracion />
+                                </>
+                            </VeterinariaProvider>
+                        }
+                    />
+                </Route>
+
+                <Route
+                    path="*"
+                    element={
+                        estaAutenticado
+                            ? <h2>404 - Página no encontrada</h2>
+                            : <Navigate to="/login" replace />
+                    }
+                />
+            </Routes>
+        </>
+    );
+}
 
 function App() {
-
-  const nombreApp = "El Dogo - Gestión de Pacientes";
-
-  const [estaLogueado, setEstaLogueado] = useState(false);
-
-  const manejadorLogin = (estado) => {
-    setEstaLogueado(estado);
-  }
-
-
-
-
-  return ( // Aquí empieza lo que el usuario realmente va a ver en el navegador.
-    <>
-      <h1>{nombreApp}</h1>
-      <p>¡Bienvenido! Acá gestionarás a tus Clientes y Mascotas.</p>
-      {estaLogueado ? (
-        <VeterinariaProvider>
-        <>
-          <Navegacion />
-<Routes>
-<Route path="/" element={<VistaClientes />} />
-<Route path="/clientes/:id" element={<VistaDetalleCliente />} />
-<Route path="/mascotas" element={<VistaMascotas />} />
-<Route path="/configuracion" element={<VistaConfiguracion />} />
-<Route path="*" element={<h2>404 - Página no encontrada</h2>} />
-</Routes>
-        </>
-        </VeterinariaProvider>
-      ) : (
-        <div>
-          <Login onLoginExitoso={manejadorLogin} />
-        </div>
-      )}
-
-      {estaLogueado && (
-        <button onClick={() => setEstaLogueado(false)}>Cerrar sesión</button>
-      )}
-
-    </>
-  )
+    return (
+        <AutenticacionProvider>
+            <ContenidoApp />
+        </AutenticacionProvider>
+    );
 }
-// 4. Exportamos el componente para poder usarlo en otro lugar (generalmente index.js)
+
 export default App;
-// Dejamos el componente listo para que React lo pueda usar y mostrar en el navegador.

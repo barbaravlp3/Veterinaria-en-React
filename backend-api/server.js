@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import clientesRoutes from './scr/routes/clientes.routes.js';
 import mascotasRoutes from './scr/routes/mascotas.routes.js';
+import autenticacionRoutes from './scr/routes/autenticacion.routes.js';
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.get('/', (req, res) => {
 // Rutas de la API
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/mascotas', mascotasRoutes);
+app.use('/api/autenticacion', autenticacionRoutes);
+
 
 // Iniciar servidor
 app.listen(PORT, () => {

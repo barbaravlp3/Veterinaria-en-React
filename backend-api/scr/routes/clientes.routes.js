@@ -1,11 +1,26 @@
-// backend-api/src/routes/clientes.routes.js (Limpio)
+
 import express from 'express';
-// Importamos las funciones del controlador
-import { getClientes, createCliente, updateCliente } from '../controllers/cliente.controller.js';
+
+import {
+    getClientes,
+    createCliente,
+    updateCliente,
+    deleteCliente
+} from '../controllers/cliente.controller.js';
+
+import {
+    verificarTokenAcceso
+} from '../middlewares/autenticar.middleware.js';
+
 const router = express.Router();
-// Mapeo directo: URL -> Controlador
+
+// Consultar clientes: ruta pública
 router.get('/', getClientes);
-router.post('/', createCliente);
-router.put('/:id', updateCliente);
-// router.delete('/:id', deleteCliente); // Asumiendo que existe
+
+// Operaciones que requieren autenticación
+router.post('/', verificarTokenAcceso, createCliente);
+router.put('/:id', verificarTokenAcceso, updateCliente);
+router.delete('/:id', verificarTokenAcceso, deleteCliente);
+
 export default router;
+

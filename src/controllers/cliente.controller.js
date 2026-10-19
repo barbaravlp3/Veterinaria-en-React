@@ -4,7 +4,7 @@ import pool from '../db.js';
 export const getClientes = async (req, res) => {
 try {
 const [rows] = await pool.query('SELECT id, nombre, apellido, telefono FROM clientes ORDER
-BY nombre ASC');
+BY nombre ASC'); 
 res.json(rows);
 } catch (error) {
 res.status(500).json({ message: 'Error interno del servidor (GET).' });
@@ -42,8 +42,6 @@ return res.status(404).json({ message: 'Cliente no encontrado.' });
 res.json({ id: Number(id), nombre, apellido, telefono, message: 'Cliente actualizado.' });
 } catch (error) {
 res.status(500).json({ message: 'Error interno del servidor (PUT).' });
-
-
 }
 };
 // ... (Similar para getClienteById y deleteCliente)
